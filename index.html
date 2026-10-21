@@ -153,7 +153,7 @@ body.ruolo-utente .solo-cliente { display: none !important; }
       <p class="ac-err" id="acErr"></p>
     </form>
     <p class="ac-nota">Hai ricevuto un link personale da Procryon? Aprilo direttamente: entri senza password.</p>
-    <p class="lab muted">versione 2026.10.20</p>
+    <p class="lab muted">versione 2026.10.21</p>
   </div>
 </section>
 
@@ -442,6 +442,7 @@ function pannello(k) {
   const fcSi = P.fonte === 'p' ? !!M?.fc : +P.man.fc > 0;
   const stimaV = P.fonte === 'p' && M ? M.nfc * M.pv : (P.man.kw ? ventKw(P.man.kw / Math.max(1, Math.round(P.man.kw / 45))) * Math.max(1, Math.round(P.man.kw / 45)) : null);
   el.innerHTML = `<div class="rs-mt"><b class="rs-let ${k}">${k}</b><select data-p="fonte"><option value="p" ${P.fonte === 'p' ? 'selected' : ''}>Procryon</option><option value="x" ${P.fonte === 'x' ? 'selected' : ''}>Altro costruttore (dati a mano)</option></select></div>
+    <div class="rs-3d" data-3d hidden></div>
     <div class="cf-campi">
     ${P.fonte === 'p' ? `<label>Serie<select data-p="serie">${serie.map(s => `<option value="${s.id}" ${s.id === P.serie ? 'selected' : ''}>${esc(s.nome)}${s.freecooling ? ' · free cooling' : ''}</option>`).join('')}</select></label>
       <label>Refrigerante<select data-p="gas">${gasS.map(g => `<option ${g === P.gas ? 'selected' : ''}>${esc(g)}</option>`).join('')}</select></label>
@@ -455,6 +456,17 @@ function pannello(k) {
       ${R.utente ? '' : campo('Fattore di resa / consumo (%)', 'fatt', P.fatt, '100 = come da catalogo')}
       ${fcSi && !R.utente ? campo('Ventilatori free cooling (kW totali)', 'pfan', P.pfan, stimaV ? 'stima ' + num(stimaV, 1) : 'stima') : ''}
     </div>${scheda(M || (P.fonte === 'x' ? macchina(k) : null))}`;
+  vista3d(k, el, M, P);
+}
+// anteprima 3D della macchina scelta: solo Cliente, solo macchine Procryon che hanno il modello
+function vista3d(k, el, M, P) {
+  const V = R.V3, slot = el.querySelector('[data-3d]');
+  if (!V || R.utente || !slot) return;
+  if (P.fonte === 'p' && M && V.haModello(M.u.c)) {
+    const s = R.D.serie.find(x => x.id === M.serie);
+    slot.hidden = false;
+    V.anteprima(k, slot, M.u.c, { serie: s ? s.nome : M.serie, kw: num(M.kw, 1), dim: M.dim ? M.dim.map(v => num(v)).join(' × ') + ' mm' : '', comp: `${M.nc} × ${tipoComp(M).toLowerCase()}`, nv: M.nv || 0, gas: M.gas });
+  } else { V.rimuovi(k); slot.hidden = true; slot.replaceChildren(); }
 }
 // scheda tecnica: completa per il Cliente; ridotta per l'Utente (potenza, dimensioni, compressori, gas)
 const tipoComp = M => (M.procryon ? R.D.serie.find(s => s.id === M.serie)?.compressore : M.tipoComp) || 'Scroll';
@@ -633,12 +645,16 @@ function eventiPannello(k) {
       ridisegna(); }
   });
 }
-function apriRisparmio(D, utente) {
+async function apriRisparmio(D, utente) {
   R.D = D; R.utente = !!utente; R.ris = null;
   R.M.A = predefinito('A'); R.M.B = predefinito('B');
   document.body.classList.toggle('ruolo-utente', R.utente);
   $('#rsRis').innerHTML = '<p class="muted">Scegli la città e premi «Calcola il risparmio».</p>';
   pannello('A'); pannello('B');
+  if (!R.utente && D.k3 && !R.V3) {          // modelli 3D: solo se i dati del Cliente contengono la chiave
+    try { const V = await import('./vendor/visore3d.js'); await V.avvia({ k3: D.k3, codici: D.m3d }); R.V3 = V; pannello('A'); pannello('B'); }
+    catch (e) { console.warn('3D non disponibile:', e); }
+  }
 }
 function avviaRisparmio(ctx) {
   R.ctx = ctx;
@@ -675,7 +691,7 @@ function avviaRisparmio(ctx) {
 // ================================================================ CRYON ENGINEERING — accesso
 // Cliente: password → chiave Kc (PBKDF2-SHA-256 600.000 giri) → dati/cliente.bin (analisi completa e schede tecniche, niente prezzi)
 // Utente: link personale …/#u=<codice> → chiave Ku → dati/utente.bin (solo kWh risparmiati e schede ridotte)
-const VERSIONE = '2026.10.20';
+const VERSIONE = '2026.10.21';
 const ub = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 const bu = b => btoa(String.fromCharCode(...new Uint8Array(b)));
 const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
