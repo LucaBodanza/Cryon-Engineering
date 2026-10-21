@@ -202,7 +202,9 @@ const G = { M: null, A: null, tok: null };
 // ---------------------------------------------------------------- GitHub (sempre dal repo, mai dalla cache del sito)
 async function gh(path, opz = {}) {
   if (!G.tok) throw new Error('manca il token GitHub (punto 2)');
-  const r = await fetch('https://api.github.com/repos/' + G.A.repo + path, { ...opz, headers: { Authorization: 'Bearer ' + G.tok, Accept: 'application/vnd.github+json', ...(opz.headers || {}) } });
+  const get = !opz.method || opz.method === 'GET';              // le letture non devono mai arrivare da una copia vecchia (cache 60 s di GitHub)
+  const url = 'https://api.github.com/repos/' + G.A.repo + path + (get ? (path.includes('?') ? '&' : '?') + '_=' + Date.now() : '');
+  const r = await fetch(url, { cache: 'no-store', ...opz, headers: { Authorization: 'Bearer ' + G.tok, Accept: 'application/vnd.github+json', ...(opz.headers || {}) } });
   if (!r.ok) throw new Error('GitHub ' + r.status + ': ' + ((await r.json().catch(() => ({}))).message || ''));
   return r;
 }
@@ -211,6 +213,12 @@ async function leggiRepo(file) {
   return new Uint8Array(await r.arrayBuffer());
 }
 async function pubblica(file, messaggio) {             // file: { 'dati/accesso.json': Uint8Array, … } in un solo commit
+  for (let t = 1; ; t++) {
+    try { return await pubblica1(file, messaggio); }
+    catch (e) { if (t >= 3 || !/422|fast forward/i.test(e.message)) throw e; log('il ramo si è appena aggiornato, riprovo…'); await new Promise(r => setTimeout(r, 2500)); }
+  }
+}
+async function pubblica1(file, messaggio) {
   const ramo = G.A.ramo;
   const ref = await (await gh('/git/ref/heads/' + ramo)).json();
   const base = await (await gh('/git/commits/' + ref.object.sha)).json();
@@ -256,7 +264,7 @@ $('#geTokSalva').onclick = async () => {
   catch (e) { G.tok = null; toast('Token non valido: ' + e.message); }
   disegna();
 };
-async function lavora(btn, fn) { btn.disabled = true; try { await fn(); } catch (e) { toast(e.message); log('ERRORE: ' + e.message); } finally { btn.disabled = false; disegna(); } }
+async function lavora(btn, fn) { btn.disabled = true; const copia = structuredClone(G.A); try { await fn(); } catch (e) { G.A = copia; toast(e.message); log('ERRORE: ' + e.message + ' (nessuna modifica pubblicata)'); } finally { btn.disabled = false; disegna(); } }
 
 // ---------------------------------------------------------------- Cliente
 $('#gePwOk').onclick = () => lavora($('#gePwOk'), async () => {
