@@ -1,7 +1,7 @@
 {
  "v": 1,
  "app": "Cryon Engineering",
- "agg": "2026-10-21T14:59:08.173Z",
+ "agg": "2026-10-21T14:59:22.564Z",
  "repo": "LucaBodanza/Cryon-Engineering",
  "ramo": "main",
  "cliente": {
@@ -21,5 +21,19 @@
   "v": "jZj+597kueJrhSsv",
   "w": "1NzMML4gggyinO4JX0SlebZ2qsHRZwj2F6NZrEliIxdyPzcGWjWob7Y6jrWNxIW7"
  },
- "utenti": []
+ "utenti": [
+  {
+   "id": "695d43aaa00043b4",
+   "n": "Utente",
+   "c": "2026-10-21T14:59:22.563Z",
+   "w": {
+    "v": "min/r/a+L2owDAOZ",
+    "w": "ODHYtOWhCHV1yXTV8XQIFU8rGk0mObTmB4XLE5O8rH65DkDHrRmJrG3uFuPM1gTJ"
+   },
+   "cm": {
+    "v": "PEkQdNfdvuNnLlVl",
+    "w": "bB0nQ2KXpM6eiCtU7gJrjuXr6LEjBBcEJhhQdzzYor56GSoynVA="
+   }
+  }
+ ]
 }
