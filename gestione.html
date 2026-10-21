@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cryon Engineering — Gestione</title>
+<link rel="icon" href="img/icona_192.png">
+<style>/* Cryon Engineering — Procryon */
+@font-face { font-family: "Inter"; src: url("font/Inter-Regular.ttf"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("font/Inter-SemiBold.ttf"); font-weight: 500 700; font-display: swap; }
+@font-face { font-family: "Plex Mono"; src: url("font/IBMPlexMono-Regular.woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Plex Mono"; src: url("font/IBMPlexMono-Medium.woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Doto"; src: url("font/Doto-Bold.ttf"); font-weight: 100 900; font-display: swap; }
+:root {
+  --bg: #161314; --bg1: #1D191A; --bg2: #262122; --bg3: #2F2A2B; --line: #3D3738; --line2: #4C4546;
+  --ink: #F7F5F4; --ink2: #A8A3A4; --muted: #6F696A; --accent: #F29C1F; --accent2: #FFB44A; --cool: #5AA0E0; --ok: #57C38A;
+  --r: 14px; --ease: cubic-bezier(.2, .8, .2, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font-family: "Inter", system-ui, sans-serif; font-size: 15px; -webkit-font-smoothing: antialiased; }
+body { background: radial-gradient(1200px 600px at 80% -10%, rgba(242,156,31,.08), transparent 60%), var(--bg); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+.muted { color: var(--muted); } .acc { color: var(--accent); }
+.lab { font-family: "Plex Mono", monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); }
+.pill { display: inline-flex; align-items: center; gap: 7px; font-family: "Plex Mono", monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--line2); border-radius: 7px; padding: 3px 10px; color: var(--ink2); white-space: nowrap; }
+.pill::before { content: "•"; }
+.pill.cool { color: var(--cool); border-color: var(--cool); } .pill.acc { color: var(--accent); border-color: var(--accent); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent); color: #1a1405; border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 600; text-decoration: none; transition: transform .25s var(--ease), background .2s; }
+.btn:hover { transform: translateY(-1px); background: var(--accent2); }
+.btn:disabled { opacity: .5; cursor: default; transform: none; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line2); font-weight: 500; }
+.btn.ghost:hover { border-color: var(--ink2); background: var(--bg2); }
+.btn.mini { padding: 6px 11px; font-size: 13px; border-radius: 8px; }
+.btn.rosso { color: #E8826B; border-color: rgba(232,130,107,.5); }
+.fv { display: flex; flex-wrap: wrap; gap: 5px; }
+.fc { background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; color: var(--ink); }
+.fc:hover { border-color: var(--accent); }
+.fc.on { background: var(--accent); border-color: var(--accent); color: #1a1206; font-weight: 600; }
+#toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); z-index: 50; background: var(--bg2); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 16px; font-size: 13px; opacity: 0; transition: .4s var(--ease); pointer-events: none; max-width: calc(100% - 32px); }
+#toast.su { opacity: 1; transform: translate(-50%, 0); }
+.marchio { display: flex; align-items: center; gap: 12px; }
+.marchio svg { height: 15px; width: auto; display: block; fill: var(--ink); }
+.marchio .sep { width: 1px; height: 16px; background: var(--line2); }
+.marchio .app { font-family: "Doto", monospace; font-weight: 800; font-size: 16px; letter-spacing: .08em; color: var(--accent); white-space: nowrap; }
+
+/* accesso */
+#accesso { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; }
+.ac-box { width: min(440px, 100%); display: grid; gap: 18px; text-align: center; }
+.ac-box .marchio { justify-content: center; }
+.ac-box h1 { font-family: "Doto", monospace; font-weight: 800; font-size: clamp(34px, 7vw, 54px); letter-spacing: .04em; margin: 8px 0 0; line-height: 1; color: var(--accent); }
+.ac-box h1 span { color: var(--ink); }
+.ac-box form { display: grid; gap: 10px; text-align: left; background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
+.ac-box input { background: var(--bg); border: 1px solid var(--line2); border-radius: 9px; padding: 11px 12px; font-size: 15px; outline: none; }
+.ac-box input:focus { border-color: var(--accent); }
+.ac-err { color: #E8826B; font-size: 13px; margin: 0; min-height: 1em; }
+.ac-nota { font-size: 12.5px; color: var(--ink2); line-height: 1.5; margin: 0; }
+
+/* barra */
+#barra { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; padding: 14px 4vw; background: rgba(22,19,20,.88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+#barra .dx { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+#barra .chi { font-size: 12.5px; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw; }
+#app { padding: 28px 4vw 60px; }
+
+/* analisi (stessa struttura del modulo Risparmio di Cryon DSGN) */
+.cf-in { display: grid; grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); gap: 34px; max-width: 1500px; margin: 0 auto; }
+.cf-sx h2 { font-size: clamp(26px, 3vw, 38px); margin: 12px 0 8px; font-weight: 600; letter-spacing: -.02em; }
+.cf-sx h4, .cf-dx h4 { font-family: "Plex Mono", monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 26px 0 10px; font-weight: 500; }
+.cf-campi { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 12px; }
+.cf-campi label { display: grid; gap: 5px; font-size: 12px; color: var(--ink2); }
+.cf-campi input, .cf-campi select { background: var(--bg1); border: 1px solid var(--line2); border-radius: 9px; padding: 9px 11px; color: var(--ink); font-size: 14px; outline: none; min-width: 0; width: 100%; }
+.cf-campi input:focus, .cf-campi select:focus { border-color: var(--accent); }
+.cf-larga { grid-column: 1 / -1; }
+.cf-chk { display: flex !important; align-items: center; gap: 8px; grid-column: 1 / -1; }
+.cf-chk input { width: auto !important; }
+body.ruolo-utente .solo-cliente { display: none !important; }
+@media (max-width: 1000px) { .cf-in { grid-template-columns: minmax(0, 1fr); } #app { padding: 20px 16px 40px; } #barra { padding: 12px 16px; } }
+.rs-cerca { position: relative; display: block; }
+.rs-cerca input { width: 100%; }
+.rs-luoghi { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 5; background: var(--bg2); border: 1px solid var(--line2); border-radius: 10px; padding: 4px; display: grid; max-height: 280px; overflow: auto; box-shadow: 0 14px 40px rgba(0,0,0,.45); }
+.rs-luoghi[hidden] { display: none; }
+.rs-luoghi button { text-align: left; background: none; border: 0; border-radius: 7px; padding: 8px 10px; color: var(--ink); font-size: 13.5px; cursor: pointer; }
+.rs-luoghi button:hover { background: var(--bg3); }
+.rs-luoghi button span, .rs-luoghi p { color: var(--ink2); font-size: 12px; margin: 6px 10px; }
+.rs-clima { font-size: 13px; line-height: 1.5; }
+.rs-macchine { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.rs-m { min-width: 0; }
+.rs-m { background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 12px; align-content: start; }
+.rs-mt { display: flex; gap: 10px; align-items: center; }
+.rs-mt select { flex: 1; min-width: 0; background: var(--bg2); border: 1px solid var(--line2); border-radius: 9px; padding: 8px 10px; color: var(--ink); font-size: 13.5px; }
+.rs-let { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; font-family: "Plex Mono", monospace; font-size: 13px; background: var(--bg3); color: var(--ink); }
+.rs-let.B { background: var(--accent); color: #1a1405; }
+.rs-sch { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; border-top: 1px solid var(--line); padding-top: 10px; margin: 0; }
+.rs-sch div { display: grid; gap: 1px; }
+.rs-sch span { font-size: 10.5px; color: var(--muted); font-family: "Plex Mono", monospace; text-transform: uppercase; letter-spacing: .06em; }
+.rs-sch b { font-size: 12.5px; font-weight: 500; }
+.rs-az { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 16px 0 6px; }
+.rs-vc { display: flex; gap: 7px; align-items: center; font-size: 12.5px; color: var(--ink2); margin-left: auto; }
+.rs-vc[hidden] { display: none; }
+.rs-esito { margin: 18px 0 12px; padding: 18px 20px; border-radius: var(--r); border: 1px solid var(--accent); background: linear-gradient(135deg, rgba(242,156,31,.12), rgba(242,156,31,.02)); }
+.rs-big { display: flex; align-items: baseline; gap: 8px 10px; flex-wrap: wrap; margin: 8px 0 6px; }
+.rs-big b { font-family: "Doto", monospace; font-weight: 800; font-size: clamp(30px, 4vw, 48px); line-height: 1; white-space: nowrap; }
+.rs-big span { color: var(--ink2); font-size: 14px; margin-right: 10px; }
+.rs-big i { font-style: normal; font-family: "Plex Mono", monospace; color: var(--ok); border: 1px solid var(--ok); border-radius: 99px; padding: 3px 10px; font-size: 13px; }
+.rs-esito p { margin: 4px 0 0; font-size: 12.5px; }
+.rs-tab { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 14px; }
+.rs-tab th, .rs-tab td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+.rs-tab th:first-child, .rs-tab td:first-child { text-align: left; color: var(--ink2); }
+.rs-tab th { font-weight: 500; font-size: 12.5px; }
+.rs-tab tr.forte td:not(:first-child) { font-weight: 600; }
+.rs-tab tr.avv td { color: #E8826B; }
+.rs-graf { background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.rs-graf svg { width: 100%; height: auto; display: block; margin-top: 8px; }
+.rs-graf text { fill: var(--ink2); font-size: 11px; text-anchor: middle; font-family: "Plex Mono", monospace; }
+.rs-graf .ba { fill: #8A8384; } .rs-graf .bb { fill: var(--accent); }
+.rs-graf .tl { fill: none; stroke: var(--cool); stroke-width: 1.6; } .rs-graf circle { fill: var(--cool); }
+.rs-graf .ka { color: #8A8384; } .rs-graf .kb { color: var(--accent); } .rs-graf .kt { color: var(--cool); }
+.rs-ip { margin-top: 12px; font-size: 12.5px; color: var(--ink2); }
+.rs-ip summary { cursor: pointer; color: var(--ink); }
+.rs-ip li { margin: 5px 0; line-height: 1.45; }
+@media (max-width: 1100px) { .rs-macchine { grid-template-columns: 1fr; } }
+
+/* gestione */
+.ge-in { max-width: 980px; margin: 0 auto; display: grid; gap: 18px; }
+.ge-card { background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; }
+.ge-card h3 { margin: 0; font-size: 17px; }
+.ge-riga { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--line); }
+.ge-riga b { min-width: 160px; }
+.ge-riga .muted { font-size: 12.5px; }
+.ge-riga .az { margin-left: auto; display: flex; gap: 8px; }
+.ge-link { font-family: "Plex Mono", monospace; font-size: 12.5px; word-break: break-all; background: var(--bg); border: 1px dashed var(--accent); border-radius: 9px; padding: 10px 12px; }
+#geLog { font-family: "Plex Mono", monospace; font-size: 12px; color: var(--ink2); white-space: pre-wrap; margin: 0; }
+#geCorpo { display: grid; gap: 18px; }
+.ge-card .cf-campi label b { display: inline; }
+</style>
+</head>
+<body>
+<header id="barra">
+  <div class="marchio"><svg xmlns="http://www.w3.org/2000/svg" viewBox="128.50 495.68 823.01 88.65" fill="currentColor"><path d="M 128.496094 582.207031 L 128.496094 511.460938 C 128.496094 510.398438 129.128906 509.765625 130.1875 509.765625 L 199.773438 509.765625 C 212.902344 509.765625 218.621094 517.074219 218.621094 529.144531 L 218.621094 550.117188 C 218.621094 562.085938 212.902344 569.390625 199.773438 569.390625 L 145.015625 569.390625 L 145.015625 582.207031 C 145.015625 583.265625 144.488281 583.898438 143.429688 583.898438 L 130.1875 583.898438 C 129.128906 583.898438 128.496094 583.265625 128.496094 582.207031 M 145.015625 524.273438 L 145.015625 554.984375 L 195.957031 554.984375 C 200.089844 554.984375 202.101562 553.398438 202.101562 548.847656 L 202.101562 530.3125 C 202.101562 525.753906 200.089844 524.273438 195.957031 524.273438 Z M 145.015625 524.273438 "/><path d="M 230.507812 582.207031 L 230.507812 511.460938 C 230.507812 510.398438 231.140625 509.765625 232.199219 509.765625 L 301.785156 509.765625 C 314.917969 509.765625 320.632812 517.074219 320.632812 529.144531 L 320.632812 545.242188 C 320.632812 554.460938 317.351562 560.917969 309.9375 563.460938 L 321.691406 581.148438 C 322.753906 582.632812 321.484375 583.898438 319.683594 583.898438 L 307.714844 583.898438 C 306.339844 583.898438 305.597656 583.265625 304.75 582.101562 L 292.886719 564.628906 L 247.027344 564.628906 L 247.027344 582.207031 C 247.027344 583.265625 246.5 583.898438 245.441406 583.898438 L 232.199219 583.898438 C 231.140625 583.898438 230.507812 583.265625 230.507812 582.207031 M 247.027344 524.273438 L 247.027344 550.117188 L 297.96875 550.117188 C 302.101562 550.117188 304.113281 548.527344 304.113281 544.082031 L 304.113281 530.3125 C 304.113281 525.753906 302.101562 524.273438 297.96875 524.273438 Z M 247.027344 524.273438 "/><path d="M 332.914062 564.941406 L 332.914062 528.71875 C 332.914062 516.644531 339.484375 509.335938 352.617188 509.335938 L 408.855469 509.335938 C 421.984375 509.335938 428.554688 516.644531 428.554688 528.71875 L 428.554688 564.941406 C 428.554688 577.015625 421.984375 584.324219 408.855469 584.324219 L 352.617188 584.324219 C 339.484375 584.324219 332.914062 577.015625 332.914062 564.941406 M 405.039062 569.8125 C 409.171875 569.8125 412.03125 568.332031 412.03125 563.777344 L 412.03125 529.882812 C 412.03125 525.332031 409.171875 523.847656 405.039062 523.847656 L 356.429688 523.847656 C 352.296875 523.847656 349.4375 525.332031 349.4375 529.882812 L 349.4375 563.777344 C 349.4375 568.332031 352.296875 569.8125 356.429688 569.8125 Z M 405.039062 569.8125 "/><path d="M 440.175781 564.941406 L 440.175781 528.71875 C 440.175781 516.644531 446.742188 509.335938 459.878906 509.335938 L 517.066406 509.335938 C 530.203125 509.335938 535.8125 516.644531 535.8125 528.71875 L 535.8125 534.648438 C 535.8125 535.816406 535.070312 536.449219 533.90625 536.449219 L 520.984375 536.449219 C 519.925781 536.449219 519.292969 535.816406 519.292969 534.648438 L 519.292969 529.882812 C 519.292969 525.332031 517.601562 523.847656 513.574219 523.847656 L 463.691406 523.847656 C 459.558594 523.847656 456.699219 525.332031 456.699219 529.882812 L 456.699219 563.777344 C 456.699219 568.332031 459.558594 569.8125 463.691406 569.8125 L 513.574219 569.8125 C 517.601562 569.8125 519.292969 568.4375 519.292969 563.457031 L 519.292969 561.554688 C 519.292969 560.386719 519.925781 559.753906 521.09375 559.753906 L 533.90625 559.753906 C 535.070312 559.753906 535.8125 560.386719 535.8125 561.554688 L 535.8125 564.625 C 535.8125 577.125 530.203125 584.324219 517.066406 584.324219 L 459.878906 584.324219 C 446.742188 584.324219 440.175781 577.015625 440.175781 564.941406 "/><path d="M 547.4375 582.207031 L 547.4375 511.460938 C 547.4375 510.398438 548.074219 509.765625 549.132812 509.765625 L 618.71875 509.765625 C 631.847656 509.765625 637.566406 517.074219 637.566406 529.144531 L 637.566406 545.242188 C 637.566406 554.460938 634.285156 560.917969 626.871094 563.460938 L 638.625 581.148438 C 639.683594 582.632812 638.414062 583.898438 636.617188 583.898438 L 624.648438 583.898438 C 623.269531 583.898438 622.527344 583.265625 621.679688 582.101562 L 609.820312 564.628906 L 563.960938 564.628906 L 563.960938 582.207031 C 563.960938 583.265625 563.433594 583.898438 562.375 583.898438 L 549.132812 583.898438 C 548.074219 583.898438 547.4375 583.265625 547.4375 582.207031 M 563.960938 524.273438 L 563.960938 550.117188 L 614.902344 550.117188 C 619.035156 550.117188 621.046875 548.527344 621.046875 544.082031 L 621.046875 530.3125 C 621.046875 525.753906 619.035156 524.273438 614.902344 524.273438 Z M 563.960938 524.273438 "/><path d="M 749.792969 564.941406 L 749.792969 528.71875 C 749.792969 516.644531 756.359375 509.335938 769.492188 509.335938 L 825.730469 509.335938 C 838.863281 509.335938 845.429688 516.644531 845.429688 528.71875 L 845.429688 564.941406 C 845.429688 577.015625 838.863281 584.324219 825.730469 584.324219 L 769.492188 584.324219 C 756.359375 584.324219 749.792969 577.015625 749.792969 564.941406 M 821.914062 569.8125 C 826.046875 569.8125 828.90625 568.332031 828.90625 563.777344 L 828.90625 529.882812 C 828.90625 525.332031 826.046875 523.847656 821.914062 523.847656 L 773.304688 523.847656 C 769.171875 523.847656 766.3125 525.332031 766.3125 529.882812 L 766.3125 563.777344 C 766.3125 568.332031 769.171875 569.8125 773.304688 569.8125 Z M 821.914062 569.8125 "/><path d="M 857.5625 582.207031 L 857.5625 511.460938 C 857.5625 510.398438 858.195312 509.765625 859.253906 509.765625 L 874.722656 509.765625 C 875.675781 509.765625 876.203125 510.292969 877.050781 511.035156 L 933.5 564.414062 L 934.878906 564.414062 L 934.878906 511.460938 C 934.878906 510.398438 935.511719 509.765625 936.570312 509.765625 L 949.808594 509.765625 C 950.867188 509.765625 951.507812 510.398438 951.507812 511.460938 L 951.507812 582.207031 C 951.507812 583.265625 950.867188 583.898438 949.808594 583.898438 L 934.347656 583.898438 C 933.289062 583.898438 932.863281 583.371094 931.910156 582.632812 L 875.566406 529.25 L 874.082031 529.25 L 874.082031 582.207031 C 874.082031 583.265625 873.554688 583.898438 872.496094 583.898438 L 859.253906 583.898438 C 858.195312 583.898438 857.5625 583.265625 857.5625 582.207031 "/><path d="M 685.933594 582.207031 L 685.933594 547.996094 L 646.214844 511.777344 C 645.050781 510.609375 646.109375 509.765625 647.273438 509.765625 L 661.996094 509.765625 C 663.375 509.765625 664.113281 510.398438 665.070312 511.351562 L 693.453125 535.183594 L 694.617188 535.183594 L 722.894531 511.351562 C 723.847656 510.398438 724.695312 509.765625 726.074219 509.765625 L 740.792969 509.765625 C 741.960938 509.765625 743.019531 510.609375 741.851562 511.777344 L 702.136719 547.996094 L 702.136719 582.207031 C 702.136719 583.265625 701.5 583.898438 700.445312 583.898438 L 687.519531 583.898438 C 686.460938 583.898438 685.933594 583.265625 685.933594 582.207031 "/><path d="M 694.027344 528.75 L 702.136719 521.917969 L 702.136719 497.367188 C 702.136719 496.316406 701.605469 495.675781 700.546875 495.675781 L 687.625 495.675781 C 686.566406 495.675781 685.933594 496.316406 685.933594 497.367188 L 685.933594 521.953125 Z M 694.027344 528.75 "/><path d="M 680.636719 550.332031 L 673.007812 543.371094 L 646.21875 567.800781 C 645.054688 568.96875 646.113281 569.8125 647.28125 569.8125 L 662 569.8125 C 663.375 569.8125 664.222656 569.175781 665.175781 568.222656 L 680.636719 555.195312 Z M 680.636719 550.332031 "/><path d="M 715.066406 543.371094 L 707.433594 550.332031 L 707.433594 555.15625 L 723.003906 568.222656 C 723.957031 569.175781 724.699219 569.8125 726.074219 569.8125 L 740.792969 569.8125 C 741.960938 569.8125 743.019531 568.964844 741.851562 567.800781 Z M 715.066406 543.371094 "/></svg><span class="sep"></span><span class="app">CRYON ENGINEERING</span></div>
+  <div class="dx"><span class="pill cool">Gestione accessi</span></div>
+</header>
+<main id="app">
+<div class="ge-in">
+  <div class="ge-card" id="gePriv">
+    <h3>1 · Apri con il file privato</h3>
+    <p class="muted">Il file <b>cryon_engineering_PRIVATO.json</b> sta solo sul Mac (cartella _PRIVATO). Non viene caricato da nessuna parte: serve solo a questa pagina, nel browser.</p>
+    <input type="file" id="geFile" accept=".json,application/json">
+    <p class="ac-err" id="geErr"></p>
+  </div>
+  <div id="geCorpo" hidden>
+    <div class="ge-card">
+      <h3>2 · Pubblicazione su GitHub</h3>
+      <p class="muted" id="geTokStato"></p>
+      <div class="cf-campi"><label class="cf-larga"><span>Token GitHub (fine-grained, solo repo <b id="geRepo"></b>, Contents: Read and write)</span><input id="geTok" type="password" autocomplete="off" placeholder="github_pat_…"></label></div>
+      <div><button class="btn ghost mini" id="geTokSalva">Salva il token su questo computer</button></div>
+    </div>
+    <div class="ge-card">
+      <h3>3 · Account Cliente (con password)</h3>
+      <p class="muted" id="geCliStato"></p>
+      <div class="cf-campi">
+        <label>Nuova password<input id="gePw1" type="password" autocomplete="new-password"></label>
+        <label>Ripeti la password<input id="gePw2" type="password" autocomplete="new-password"></label>
+      </div>
+      <div><button class="btn" id="gePwOk">Imposta la password e pubblica</button></div>
+      <p class="muted">Cambiando la password chi usava quella vecchia resta fuori (i dati vengono richiusi con una chiave nuova).</p>
+    </div>
+    <div class="ge-card">
+      <h3>4 · Link Utente (senza password)</h3>
+      <p class="muted">Ogni link è personale: chi lo apre entra come Utente (solo kWh risparmiati e schede ridotte). Revocando un link, solo quello smette di funzionare.</p>
+      <div class="cf-campi"><label class="cf-larga">Nome (azienda o persona a cui lo mandi)<input id="geNome" maxlength="60" placeholder="es. Rossi Plastica S.r.l."></label></div>
+      <div><button class="btn" id="geNuovo">Crea il link e pubblica</button></div>
+      <div id="geNuovoLink"></div>
+      <div id="geUtenti"></div>
+    </div>
+    <div class="ge-card"><h3>Registro</h3><pre id="geLog"></pre></div>
+  </div>
+</div>
+</main>
+<div id="toast"></div>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ub = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const bu = b => { const u = new Uint8Array(b); let s = ''; for (let i = 0; i < u.length; i += 32768) s += String.fromCharCode(...u.subarray(i, i + 32768)); return btoa(s); };
+const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+const enc = t => new TextEncoder().encode(t);
+const sha = t => crypto.subtle.digest('SHA-256', typeof t === 'string' ? enc(t) : t);
+const rnd = n => crypto.getRandomValues(new Uint8Array(n));
+const aes = raw => crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
+async function chiudi(k, dati) { const iv = rnd(12); return { v: bu(iv), w: bu(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, k, dati)) }; }
+async function apri(k, x) { return new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: ub(x.v) }, k, ub(x.w))); }
+async function cifraFile(raw, z) { const iv = rnd(12), c = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await aes(raw), z)); const o = new Uint8Array(15 + c.length); o.set(enc('CE1')); o.set(iv, 3); o.set(c, 15); return o; }
+async function decifraFile(raw, b) { if (String.fromCharCode(...b.slice(0, 3)) !== 'CE1') throw new Error('file dati rovinato'); return new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(3, 15) }, await aes(raw), b.slice(15))); }
+function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('su'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('su'), 3500); }
+function log(t) { $('#geLog').textContent = new Date().toLocaleTimeString('it-IT') + '  ' + t + '\n' + $('#geLog').textContent; }
+const SITO = location.href.replace(/gestione\.html.*$/, '');
+const G = { M: null, A: null, tok: null };
+
+// ---------------------------------------------------------------- GitHub (sempre dal repo, mai dalla cache del sito)
+async function gh(path, opz = {}) {
+  if (!G.tok) throw new Error('manca il token GitHub (punto 2)');
+  const r = await fetch('https://api.github.com/repos/' + G.A.repo + path, { ...opz, headers: { Authorization: 'Bearer ' + G.tok, Accept: 'application/vnd.github+json', ...(opz.headers || {}) } });
+  if (!r.ok) throw new Error('GitHub ' + r.status + ': ' + ((await r.json().catch(() => ({}))).message || ''));
+  return r;
+}
+async function leggiRepo(file) {
+  const r = await gh('/contents/' + file + '?ref=' + G.A.ramo, { headers: { Accept: 'application/vnd.github.raw' } });
+  return new Uint8Array(await r.arrayBuffer());
+}
+async function pubblica(file, messaggio) {             // file: { 'dati/accesso.json': Uint8Array, … } in un solo commit
+  const ramo = G.A.ramo;
+  const ref = await (await gh('/git/ref/heads/' + ramo)).json();
+  const base = await (await gh('/git/commits/' + ref.object.sha)).json();
+  const tree = [];
+  for (const [path, byte] of Object.entries(file)) {
+    const b = await (await gh('/git/blobs', { method: 'POST', body: JSON.stringify({ content: bu(byte), encoding: 'base64' }) })).json();
+    tree.push({ path, mode: '100644', type: 'blob', sha: b.sha });
+  }
+  const t = await (await gh('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: base.tree.sha, tree }) })).json();
+  const c = await (await gh('/git/commits', { method: 'POST', body: JSON.stringify({ message: messaggio, tree: t.sha, parents: [ref.object.sha] }) })).json();
+  await gh('/git/refs/heads/' + ramo, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
+  log('pubblicato ' + c.sha.slice(0, 7) + ' · ' + messaggio + ' (online tra 1–2 minuti)');
+}
+const testoAcc = () => enc(JSON.stringify({ ...G.A, agg: new Date().toISOString() }, null, 1));
+
+// ---------------------------------------------------------------- apertura
+$('#geFile').onchange = async e => {
+  $('#geErr').textContent = '';
+  try {
+    const P = JSON.parse(await e.target.files[0].text());
+    if (P.app !== 'Cryon Engineering' || !P.master) throw new Error('questo non è il file privato di Cryon Engineering');
+    G.M = await aes(ub(P.master));
+    const r = await fetch(SITO + 'dati/accesso.json?' + Date.now(), { cache: 'no-store' });
+    G.A = await r.json();
+    await apri(G.M, G.A.kc_m);                                     // verifica: la chiave madre è quella giusta
+    try { const t = JSON.parse(localStorage.getItem('ce.gh') || 'null'); if (t) G.tok = new TextDecoder().decode(await apri(G.M, t)); } catch (er) { G.tok = null; }
+    if (G.tok) { try { const n = JSON.parse(new TextDecoder().decode(await leggiRepo('dati/accesso.json'))); G.A = n; } catch (er) { log('lettura dal repo non riuscita: ' + er.message + ' — uso la copia del sito'); } }
+    $('#gePriv').hidden = true; $('#geCorpo').hidden = false; disegna();
+    log('aperto: ' + (G.A.utenti || []).length + ' link Utente, Cliente ' + (G.A.cliente ? 'attivo' : 'da attivare'));
+  } catch (er) { $('#geErr').textContent = er.name === 'OperationError' ? 'Il file privato non corrisponde a questo sito' : er.message; }
+};
+function disegna() {
+  $('#geRepo').textContent = G.A.repo;
+  $('#geTokStato').textContent = G.tok ? 'Token salvato su questo computer (cifrato con la chiave madre).' : 'Nessun token salvato: incollalo qui sotto (lo crei tu su GitHub, non va mai scritto in chat).';
+  $('#geCliStato').innerHTML = G.A.cliente ? `Attivo · password impostata il ${new Date(G.A.cliente.d || G.A.agg).toLocaleDateString('it-IT')}` : '<b class="acc">Da attivare:</b> scegli la password del Cliente.';
+  const U = G.A.utenti || [];
+  $('#geUtenti').innerHTML = U.length ? U.map(u => `<div class="ge-riga"><b>${esc(u.n)}</b><span class="muted">creato il ${new Date(u.c).toLocaleDateString('it-IT')}</span><span class="az"><button class="btn ghost mini" data-copia="${u.id}">Copia link</button><button class="btn ghost mini rosso" data-rev="${u.id}">Revoca</button></span></div>`).join('') : '<p class="muted">Nessun link creato.</p>';
+}
+$('#geTokSalva').onclick = async () => {
+  const t = $('#geTok').value.trim(); if (!t) return toast('Incolla prima il token');
+  G.tok = t; $('#geTok').value = '';
+  try { await gh(''); localStorage.setItem('ce.gh', JSON.stringify(await chiudi(G.M, enc(t)))); toast('Token salvato'); log('token verificato su ' + G.A.repo); }
+  catch (e) { G.tok = null; toast('Token non valido: ' + e.message); }
+  disegna();
+};
+async function lavora(btn, fn) { btn.disabled = true; try { await fn(); } catch (e) { toast(e.message); log('ERRORE: ' + e.message); } finally { btn.disabled = false; disegna(); } }
+
+// ---------------------------------------------------------------- Cliente
+$('#gePwOk').onclick = () => lavora($('#gePwOk'), async () => {
+  const p1 = $('#gePw1').value, p2 = $('#gePw2').value;
+  if (p1.length < 8) throw new Error('La password deve avere almeno 8 caratteri');
+  if (p1 !== p2) throw new Error('Le due password non coincidono');
+  let kc = await apri(G.M, G.A.kc_m);
+  const file = {};
+  if (G.A.cliente) {                                            // cambio password: chiave nuova, dati richiusi
+    const z = await decifraFile(kc, await leggiRepo('dati/cliente.bin'));
+    kc = rnd(32); file['dati/cliente.bin'] = await cifraFile(kc, z); G.A.kc_m = await chiudi(G.M, kc);
+  }
+  const s = rnd(16), i = 600000;
+  const base = await crypto.subtle.importKey('raw', enc(p1), 'PBKDF2', false, ['deriveKey']);
+  const kp = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: s, iterations: i, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt']);
+  G.A.cliente = { s: bu(s), i, w: await chiudi(kp, kc), d: new Date().toISOString() };
+  file['dati/accesso.json'] = testoAcc();
+  await pubblica(file, 'Cryon Engineering: password Cliente');
+  $('#gePw1').value = $('#gePw2').value = ''; toast('Password del Cliente pubblicata');
+});
+
+// ---------------------------------------------------------------- link Utente
+const ALF = 'abcdefghijkmnpqrstuvwxyz23456789';
+const nuovoCodice = () => [...rnd(22)].map(x => ALF[x % 32]).join('');
+const linkDi = c => SITO + '#u=' + c;
+$('#geNuovo').onclick = () => lavora($('#geNuovo'), async () => {
+  const n = $('#geNome').value.trim(); if (!n) throw new Error('Scrivi il nome a cui mandi il link');
+  const ku = await apri(G.M, G.A.ku_m), c = nuovoCodice();
+  const u = { id: hex(await sha('id|' + c)).slice(0, 16), n, c: new Date().toISOString(), w: await chiudi(await aes(await sha('cryon-engineering|utente|' + c)), ku), cm: await chiudi(G.M, enc(c)) };
+  G.A.utenti = [...(G.A.utenti || []), u];
+  await pubblica({ 'dati/accesso.json': testoAcc() }, 'Cryon Engineering: link Utente ' + n);
+  $('#geNome').value = '';
+  $('#geNuovoLink').innerHTML = `<p class="lab">Link per ${esc(n)} (attivo tra 1–2 minuti)</p><div class="ge-link">${esc(linkDi(c))}</div>`;
+  navigator.clipboard?.writeText(linkDi(c)).then(() => toast('Link copiato'), () => {});
+});
+$('#geUtenti').onclick = e => {
+  const cp = e.target.closest('[data-copia]'), rv = e.target.closest('[data-rev]');
+  if (cp) (async () => { const u = G.A.utenti.find(x => x.id === cp.dataset.copia); const c = new TextDecoder().decode(await apri(G.M, u.cm)); await navigator.clipboard.writeText(linkDi(c)); toast('Link di ' + u.n + ' copiato'); })().catch(er => toast(er.message));
+  if (rv) {
+    const u = G.A.utenti.find(x => x.id === rv.dataset.rev);
+    if (!confirm('Revocare il link di ' + u.n + '? Smetterà di funzionare subito dopo la pubblicazione.')) return;
+    lavora(rv, async () => {
+      const vecchia = await apri(G.M, G.A.ku_m), z = await decifraFile(vecchia, await leggiRepo('dati/utente.bin'));
+      const ku = rnd(32), resto = G.A.utenti.filter(x => x.id !== u.id);
+      for (const x of resto) { const c = new TextDecoder().decode(await apri(G.M, x.cm)); x.w = await chiudi(await aes(await sha('cryon-engineering|utente|' + c)), ku); }
+      G.A.utenti = resto; G.A.ku_m = await chiudi(G.M, ku);
+      await pubblica({ 'dati/utente.bin': await cifraFile(ku, z), 'dati/accesso.json': testoAcc() }, 'Cryon Engineering: revoca link ' + u.n);
+      toast('Link di ' + u.n + ' revocato');
+    });
+  }
+};
+</script>
+</body>
+</html>
