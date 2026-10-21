@@ -1,10 +1,18 @@
 {
  "v": 1,
  "app": "Cryon Engineering",
- "agg": "2026-10-20T15:05:08.000Z",
+ "agg": "2026-10-21T14:31:36.638Z",
  "repo": "LucaBodanza/Cryon-Engineering",
  "ramo": "main",
- "cliente": null,
+ "cliente": {
+  "s": "+SZjcZAceC0gmX722JZTOg==",
+  "i": 600000,
+  "w": {
+   "v": "ZAHQh/AjXLBDBzWA",
+   "w": "jk694asDvl+qVnMCSNmZOxcPGKH+JQ1r+zmBPJ4X/O8RyeWe8K43Q3yqYUbCrl5v"
+  },
+  "d": "2026-10-21T14:31:36.638Z"
+ },
  "kc_m": {
   "v": "3iF4WM3TkV3Dur5W",
   "w": "1hD/rdS7jG2VxN+j34bGu+ZMsa36QYDmshra121roQBDtPftQScARTvbqhEJ5DZh"
